@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食材管理アプリ 2026</title>
+<style>
+  :root {
+    --primary: #2e7d32;
+    --primary-light: #e8f5e9;
+    --warning: #f57c00;
+    --warning-light: #fff3e0;
+    --danger: #d32f2f;
+    --danger-light: #ffebee;
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #333333;
+    --gray: #757575;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
+  
+  header {
+    background: var(--primary);
+    color: white;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 1.2rem; font-weight: bold; }
+  header p { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; }
+
+  .container { max-width: 500px; margin: 0 auto; padding: 12px; }
+
+  /* 検索バー・Undoバー */
+  .tool-bar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+  .search-input { flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 20px; font-size: 0.85rem; }
+  .btn-undo { background: #616161; color: white; border: none; border-radius: 20px; padding: 8px 14px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .btn-undo:disabled { background: #bdbdbd; cursor: not-allowed; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .summary-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .summary-card.danger { background: var(--danger-light); border: 1px solid #ffcdd2; }
+  .summary-card.warning { background: var(--warning-light); border: 1px solid #ffe0b2; }
+  .summary-num { font-size: 1.4rem; font-weight: bold; }
+  .summary-card.danger .summary-num { color: var(--danger); }
+  .summary-card.warning .summary-num { color: var(--warning); }
+  .summary-label { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
+
+  .filter-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: var(--card); padding: 8px 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .filter-label { font-size: 0.8rem; font-weight: bold; color: #555; }
+  .select-sort { font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; background: white; }
+
+  /* 定番食材ワンタップエリア */
+  .quick-bar { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .quick-title { font-size: 0.85rem; font-weight: bold; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .quick-btns { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .btn-quick { background: var(--primary-light); color: var(--primary); border: 1px solid #c8e6c9; border-radius: 20px; padding: 6px 12px; font-size: 0.8rem; white-space: nowrap; cursor: pointer; font-weight: 500; }
+  .btn-preset-list { background: #fff8e1; color: #f57f17; border: 1px solid #ffe082; border-radius: 20px; padding: 6px 12px; font-size: 0.8rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+
+  .tabs { display: flex; background: #e0e0e0; border-radius: 10px; padding: 3px; margin-bottom: 16px; }
+  .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 0; font-size: 0.8rem; font-weight: bold; color: var(--gray); border-radius: 8px; cursor: pointer; }
+  .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  .item-card { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #ccc; }
+  .item-card.danger { border-left-color: var(--danger); background: #fffcfc; }
+  .item-card.warning { border-left-color: var(--warning); }
+  .item-card.safe { border-left-color: var(--primary); }
+  
+  .item-info { flex: 1; }
+  .item-name { font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+  .item-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: #eee; font-weight: normal; }
+  .item-meta { font-size: 0.75rem; color: var(--gray); margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .item-status { text-align: right; margin-right: 8px; }
+  .days-left { font-size: 1rem; font-weight: bold; }
+  .days-left.danger { color: var(--danger); }
+  .days-left.warning { color: var(--warning); }
+  .days-left.safe { color: var(--primary); }
+
+  .action-btns { display: flex; flex-direction: column; gap: 4px; }
+  .btn-step { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+  .btn-eat { background: #e8f5e9; color: var(--primary); border: 1px solid #a5d6a7; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+  .btn-edit-date { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; }
+
+  /* 曜日別セクションスタイル */
+  .day-section { background: var(--card); border-radius: 12px; margin-bottom: 16px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); }
+  .day-title { font-weight: bold; font-size: 1rem; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+
+  /* 担当者別カラーバッジスタイル */
+  .badge-person { font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: bold; display: inline-block; margin-left: 4px; }
+  .bg-yohei { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; } /* 洋平: 緑 */
+  .bg-kohei { background-color: #fce4ec; color: #c2185b; border: 1px solid #f8bbd0; } /* 晃平: ピンク */
+  .bg-yuma  { background-color: #fffde7; color: #f57f17; border: 1px solid #fff59d; } /* 夢翔: 黄色 */
+  .bg-kanade { background-color: #e0f7fa; color: #0288d1; border: 1px solid #80deea; } /* 奏花: 水色 */
+
+  /* レシピカード */
+  .recipe-card { background: #fff; border-radius: 8px; padding: 10px; margin-bottom: 8px; border: 1px solid #e0e0e0; }
+  .recipe-title { font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .recipe-match { font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+  .match-high { background: #e8f5e9; color: #2e7d32; }
+  .match-mid { background: #fff3e0; color: #e65100; }
+  
+  .ingredient-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .ing-tag { font-size: 0.7rem; padding: 3px 6px; border-radius: 4px; display: flex; align-items: center; gap: 2px; }
+  .ing-ok { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+  .ing-missing { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; text-decoration: line-through; }
+
+  .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
+  .modal.active { display: flex; }
+  .modal-content { background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; }
+  .modal-header { font-size: 1.1rem; font-weight: bold; margin-bottom: 16px; color: var(--primary); display: flex; justify-content: space-between; }
+
+  .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+  .preset-card { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .preset-card:hover { background: #e8f5e9; border-color: #a5d6a7; }
+  .preset-name { font-weight: bold; font-size: 0.85rem; }
+  .preset-sub { font-size: 0.7rem; color: #757575; }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 4px; }
+  .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; }
+  .quantity-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .qty-btn { padding: 8px 4px; border: 1px solid #ccc; background: white; border-radius: 6px; font-size: 0.75rem; cursor: pointer; text-align: center; }
+  .qty-btn.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: bold; }
+
+  .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 1rem; margin-top: 12px; cursor: pointer; }
+
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; }
+  .btn-add-main { background: var(--primary); color: white; border: none; border-radius: 25px; padding: 10px 24px; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🥬 食材管理アプリ 2026</h1>
+  <p>食材購入後、料理後に変更する</p>
+</header>
+
+<div class="container">
+  <div class="tool-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 食材名や料理名で検索..." oninput="render()">
+    <button id="undoBtn" class="btn-undo" onclick="undoAction()" disabled>↩️ 元に戻す</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card danger">
+      <div class="summary-num" id="cnt-danger">0</div>
+      <div class="summary-label">🚨 本日〜明日中</div>
+    </div>
+    <div class="summary-card warning">
+      <div class="summary-num" id="cnt-warning">0</div>
+      <div class="summary-label">⚠️ 3日以内</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-num" id="cnt-total">0</div>
+      <div class="summary-label">📦 全在庫数</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">⚙️ 表示設定:</span>
+    <select id="sortSelect" class="select-sort" onchange="render()">
+      <option value="expiryAsc">⏰ 期限が近い順（標準）</option>
+      <option value="qtyAsc">📉 残量が少ない順</option>
+      <option value="location">📍 保管場所順</option>
+    </select>
+  </div>
+
+  <div class="quick-bar">
+    <div class="quick-title">
+      <span>⚡ よく使う食材の即追加</span>
+      <button class="btn-preset-list" onclick="openPresetModal()">📋 食材一覧</button>
+    </div>
+    <div class="quick-btns">
+      <button class="btn-quick" onclick="quickAdd('じゃがいも', 30, '野菜', '常温パントリー')">+ じゃがいも(30日)</button>
+      <button class="btn-quick" onclick="quickAdd('玉ねぎ', 21, '野菜', '常温パントリー')">+ 玉ねぎ(21日)</button>
+      <button class="btn-quick" onclick="quickAdd('にんじん', 14, '野菜', '野菜室')">+ にんじん(14日)</button>
+      <button class="btn-quick" onclick="quickAdd('豚バラ肉', 2, '肉・魚', 'チルド室')">+ 豚バラ肉(2日)</button>
+      <button class="btn-quick" onclick="quickAdd('牛豚ミンチ大', 2, '肉・魚', 'チルド室')">+ 牛豚ミンチ大(2日)</button>
+      <button class="btn-quick" onclick="quickAdd('ソース', 180, '調味料', '常温パントリー')">+ ソース(180日)</button>
+      <button class="btn-quick" onclick="quickAdd('ケチャップ', 180, '調味料', '常温パントリー')">+ ケチャップ(180日)</button>
+      <button class="btn-quick" onclick="quickAdd('マヨネーズ', 180, '調味料', '冷蔵室')">+ マヨネーズ(180日)</button>
+      <button class="btn-quick" onclick="quickAdd('食パン(6枚切)', 5, '加工品', 'パン棚')">+ 食パン(6枚切)(5日)</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('urgent', event)">🔥 要注意</button>
+    <button class="tab-btn" onclick="switchTab('recipe', event)">🍳 料理で検索</button>
+    <button class="tab-btn" onclick="switchTab('all', event)">📋 全在庫</button>
+    <button class="tab-btn" onclick="switchTab('shopping', event)">🛒 買出しメモ</button>
+  </div>
+
+  <div id="item-list"></div>
+</div>
+
+<div class="bottom-nav">
+  <button class="btn-add-main" onclick="openModal()">＋ 手動で食材を追加する</button>
+</div>
+
+<!-- ③ 賞味期限変更 modal -->
+<div class="modal" id="editDateModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="editModalTitle">✏️ 賞味期限の更新</span>
+      <span style="cursor:pointer;" onclick="closeEditDateModal()">✕</span>
+    </div>
+    <div class="form-group">
+      <label>新しい賞味期限 / 消費期限</label>
+      <input type="date" id="editInputDate" required>
+    </div>
+    
+    <div style="background:#e3f2fd; border:1px solid #bbdefb; padding:10px; border-radius:8px; margin-bottom:12px;">
+      <p style="font-size:0.75rem; color:#0d47a1; font-weight:bold; margin-bottom:6px;">⚡ ワンタップ期限変更</p>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-bottom:6px;">
+        <button type="button" style="background:#fff3e0; border:1px solid #ffe0b2; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#e65100; font-weight:bold;" onclick="extendExpiry(-1)">-1日</button>
+        <button type="button" style="background:#fff3e0; border:1px solid #ffe0b2; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#e65100; font-weight:bold;" onclick="extendExpiry(-7)">-1週間</button>
+        <button type="button" style="background:#fff3e0; border:1px solid #ffe0b2; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#e65100; font-weight:bold;" onclick="extendExpiry(-30)">-1ヶ月</button>
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
+        <button type="button" style="background:white; border:1px solid #90caf9; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer;" onclick="extendExpiry(1)">+1日延長</button>
+        <button type="button" style="background:white; border:1px solid #90caf9; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer;" onclick="extendExpiry(7)">+1週間延長</button>
+        <button type="button" style="background:white; border:1px solid #90caf9; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer;" onclick="extendExpiry(30)">+1ヶ月延長</button>
+      </div>
+    </div>
+
+    <button type="button" class="btn-submit" onclick="saveUpdatedDate()">期限を変更して保存</button>
+  </div>
+</div>
+
+<!-- 食材一覧 modal -->
+<div class="modal" id="presetModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>📋 食材一覧マスター (50音順)</span>
+      <span style="cursor:pointer;" onclick="closePresetModal()">✕</span>
+    </div>
+    <div class="form-group" style="margin-bottom:10px;">
+      <input type="text" id="presetSearchInput" placeholder="🔍 食材一覧から絞り込み検索..." oninput="renderPresetList()" style="padding:8px 12px; font-size:0.85rem;">
+    </div>
+    <p style="font-size:0.75rem; color:#666; margin-bottom:10px;">タップすると賞味期限が自動設定されて在庫に追加されます：</p>
+    <div class="preset-grid" id="presetGrid"></div>
+  </div>
+</div>
+
+<!-- 食材手動追加 modal -->
+<div class="modal" id="addModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>食材の追加</span>
+      <span style="cursor:pointer;" onclick="closeModal()">✕</span>
+    </div>
+    <form id="addForm" onsubmit="handleFormSubmit(event)">
+      <div class="form-group">
+        <label>食材名</label>
+        <input type="text" id="inputName" placeholder="例：ミニトマト" required>
+      </div>
+      <div class="form-group">
+        <label>カテゴリ / 保管場所</label>
+        <select id="inputCategory">
+          <option value="野菜室">🥬 野菜室</option>
+          <option value="チルド室">🥩 チルド室（肉・魚）</option>
+          <option value="冷蔵室">🥛 冷蔵室 / ドアポケット</option>
+          <option value="冷凍室">❄️ 冷凍室</option>
+          <option value="パントリー">常温パントリー・調味料</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>賞味期限 / 消費期限</label>
+        <input type="date" id="inputDate" required>
+      </div>
+      <div class="form-group">
+        <label>残量の目安</label>
+        <div class="quantity-btns">
+          <div class="qty-btn selected" onclick="selectQty(this, '100%')">100%</div>
+          <div class="qty-btn" onclick="selectQty(this, '75%')">75%</div>
+          <div class="qty-btn" onclick="selectQty(this, '50%')">50%</div>
+          <div class="qty-btn" onclick="selectQty(this, '25%')">25%</div>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit">保存する</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// 日曜日から土曜日までの順序構造で定義（担当者を紐付け）
+const weeklySchedule = [
+  {
+    day: '日曜日',
+    tasks: [
+      { person: '洋平', title: 'シチュー', ingredients: ['鶏もも肉(3切)', 'じゃがいも', '玉ねぎ', 'にんじん', 'シチュールー'] },
+      { person: '晃平', title: 'カレー', ingredients: ['玉ねぎ', 'にんじん', 'じゃがいも', '豚バラ肉', 'カレールー'] }
+    ]
+  },
+  {
+    day: '月曜日',
+    tasks: [
+      { person: '奏花', title: 'みそ汁', ingredients: ['豆腐(2丁)', '油揚げ', '味噌', '和風ダシ'] },
+      { person: '奏花', title: 'うどん', ingredients: ['うどん(3入)', 'めんつゆ', '油揚げ'] },
+      { person: '奏花', title: '豚汁', ingredients: ['豚バラ肉', '大根', 'にんじん', 'ごぼう', '味噌'] },
+      { person: '奏花', title: 'チャーハン', ingredients: ['卵(10個包)', 'ハム(1レーン)', 'ねぎ', '塩こしょう'] }
+    ]
+  },
+  {
+    day: '火曜日',
+    tasks: [
+      { person: '夢翔', title: '三色ごはん', ingredients: ['牛豚ミンチ小', '卵(10個包)', 'ほうれん草', '醤油', '砂糖'] },
+      { person: '夢翔', title: 'タコライス', ingredients: ['牛豚ミンチ小', 'レタス', 'トマト', 'ケチャップ'] },
+      { person: '夢翔', title: 'なすミンチ', ingredients: ['ナス', '豚ミンチ大', '生姜', '醤油'] },
+      { person: '夢翔', title: '焼きそば', ingredients: ['焼きそば(3入)', 'キャベツ', '豚バラ肉', 'ソース'] }
+    ]
+  },
+  {
+    day: '水曜日',
+    tasks: [
+      { person: '奏花', title: '魚&さつま揚げ', ingredients: ['鮭(2切)', 'さつま揚げ', '醤油'] },
+      { person: '奏花', title: 'ポトフ', ingredients: ['ウインナー', 'じゃがいも', '玉ねぎ', 'にんじん', 'コンソメ'] },
+      { person: '奏花', title: '麻婆豆腐', ingredients: ['豆腐(2丁)', '豚ミンチ大', '麻婆ソース'] },
+      { person: '奏花', title: '肉じゃが', ingredients: ['豚バラ肉', 'じゃがいも', '玉ねぎ', 'にんじん', 'しらたき'] }
+    ]
+  },
+  {
+    day: '木曜日',
+    tasks: [
+      { person: '夢翔', title: 'しょうが焼き', ingredients: ['豚ローススライス', '玉ねぎ', '生姜', '醤油', 'みりん'] },
+      { person: '夢翔', title: '親子丼', ingredients: ['鶏もも肉(3切)', '玉ねぎ', '卵(10個包)', 'めんつゆ'] },
+      { person: '夢翔', title: '魚&ほうれん草', ingredients: ['ブリ(2切)', 'ほうれん草', '醤油'] },
+      { person: '夢翔', title: 'とり肉', ingredients: ['鶏むね肉(2切)', '塩こしょう', '醤油'] }
+    ]
+  },
+  {
+    day: '金曜日',
+    tasks: [
+      { person: '夢翔 & 奏花', title: 'ハンバーグ&ポテサラ', ingredients: ['牛豚ミンチ大', '玉ねぎ', 'じゃがいも', 'マヨネーズ', 'パン粉'] },
+      { person: '夢翔 & 奏花', title: 'チキン南蛮', ingredients: ['鶏むね肉(5切)', '卵(10個包)', '酢', '砂糖', 'マヨネーズ'] },
+      { person: '夢翔 & 奏花', title: 'チリコンカーン', ingredients: ['牛豚ミンチ大', '大豆', 'トマト', 'コンソメ'] }
+    ]
+  },
+  {
+    day: '土曜日',
+    tasks: [
+      { person: '洋平', title: 'パスタ', ingredients: ['パスタ', 'パスタソース', 'ウインナー'] },
+      { person: '晃平', title: 'お好み焼き', ingredients: ['キャベツ', '豚バラ肉', '卵(10個包)', '小麦粉', 'ソース', 'マヨネーズ'] }
+    ]
+  }
+];
+
+const defaultPresets = [
+  { name: 'アボカド', kana: 'あぼかど', days: 5, category: '野菜', location: '野菜室' },
+  { name: '油', kana: 'あぶら', days: 500, category: '調味料', location: '常温パントリー' },
+  { name: '油揚げ', kana: 'あぶらあげ', days: 5, category: '加工品', location: '冷蔵室' },
+  { name: 'ウインナー', kana: 'ういんなー', days: 14, category: '加工品', location: '冷蔵室' },
+  { name: '牛豚ミンチ大', kana: 'うしぶたみんちだい', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '牛豚ミンチ小', kana: 'うしぶたみんちしょう', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: 'うどん(3入)', kana: 'うどん', days: 10, category: '麺類', location: '冷蔵室' },
+  { name: '卵(10個包)', kana: 'たまご', days: 14, category: '乳製品・卵', location: 'ドアポケット' },
+  { name: 'カレールー', kana: 'かれーるー', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: '片栗粉', kana: 'かたくりこ', days: 360, category: '粉類', location: '常温パントリー' },
+  { name: 'キャベツ', kana: 'きゃべつ', days: 7, category: '野菜', location: '野菜室' },
+  { name: 'きゅうり', kana: 'きゅうり', days: 5, category: '野菜', location: '野菜室' },
+  { name: '牛乳', kana: 'ぎゅうにゅう', days: 14, category: '乳製品・卵', location: 'ドアポケット' },
+  { name: 'ケチャップ', kana: 'けちゃっぷ', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: '小麦粉', kana: 'こむぎこ', days: 180, category: '粉類', location: '常温パントリー' },
+  { name: 'コンソメ', kana: 'こんそめ', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: '酒', kana: 'さけ', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: '鮭(2切)', kana: 'さけ2きれ', days: 3, category: '肉・魚', location: 'チルド室' },
+  { name: '鮭(3切)', kana: 'さけ3きれ', days: 3, category: '肉・魚', location: 'チルド室' },
+  { name: 'さつまいも', kana: 'さつまいも', days: 20, category: '野菜', location: '常温パントリー' },
+  { name: 'さつま揚げ', kana: 'さつまあげ', days: 5, category: '加工品', location: '冷蔵室' },
+  { name: '砂糖', kana: 'さとう', days: 720, category: '調味料', location: '常温パントリー' },
+  { name: '塩', kana: 'しお', days: 720, category: '調味料', location: '常温パントリー' },
+  { name: '塩こしょう', kana: 'しおこしょう', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: 'シチュールー', kana: 'しちゅーるー', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: 'しらたき', kana: 'しらたき', days: 14, category: '加工品', location: '冷蔵室' },
+  { name: 'じゃがいも', kana: 'じゃがいも', days: 30, category: '野菜', location: '常温パントリー' },
+  { name: '生姜', kana: 'しょうが', days: 14, category: '野菜', location: '野菜室' },
+  { name: '醤油', kana: 'しょうゆ', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: '酢', kana: 'す', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: 'ソース', kana: 'そーす', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: '大根', kana: 'だいこん', days: 10, category: '野菜', location: '野菜室' },
+  { name: '大豆', kana: 'だいず', days: 360, category: '乾物', location: '常温パントリー' },
+  { name: '玉ねぎ', kana: 'たまねぎ', days: 21, category: '野菜', location: '常温パントリー' },
+  { name: '豆腐(2丁)', kana: 'とうふ', days: 4, category: '加工品', location: '冷蔵室' },
+  { name: 'トマト', kana: 'とまと', days: 5, category: '野菜', location: '野菜室' },
+  { name: '鶏むね肉(5切)', kana: 'とりむねにく5きれ', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '鶏もも肉(2切)', kana: 'とりももにく2きれ', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '鶏もも肉(3切)', kana: 'とりももにく3きれ', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: 'ナス', kana: 'なす', days: 5, category: '野菜', location: '野菜室' },
+  { name: 'にんにく', kana: 'にんにく', days: 30, category: '野菜', location: '常温パントリー' },
+  { name: 'にんじん', kana: 'にんじん', days: 14, category: '野菜', location: '野菜室' },
+  { name: 'バター', kana: 'ばたー', days: 180, category: '乳製品・卵', location: '冷蔵室' },
+  { name: 'パスタ', kana: 'ぱすた', days: 360, category: '乾物', location: '常温パントリー' },
+  { name: 'パスタソース', kana: 'ぱすたそーす', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: 'パン粉', kana: 'ぱんこ', days: 90, category: '粉類', location: '常温パントリー' },
+  { name: 'ピーマン', kana: 'ぴーまん', days: 7, category: '野菜', location: '野菜室' },
+  { name: 'ブリ(2切)', kana: 'ぶり2きれ', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: 'ブリ(3切)', kana: 'ぶり3きれ', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '豚バラ肉', kana: 'ぶたばらにく', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '豚ミンチ大', kana: 'ぶたみんちだい', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: '豚ローススライス', kana: 'ぶたろーすすらいす', days: 2, category: '肉・魚', location: 'チルド室' },
+  { name: 'ほうれん草', kana: 'ほうれんそう', days: 4, category: '野菜', location: '野菜室' },
+  { name: '麻婆ソース', kana: 'まーぼーそーす', days: 180, category: '調味料', location: '常温パントリー' },
+  { name: 'マヨネーズ', kana: 'まよねーず', days: 180, category: '調味料', location: '冷蔵室' },
+  { name: '味噌', kana: 'みそ', days: 180, category: '調味料', location: '冷蔵室' },
+  { name: 'みりん', kana: 'みりん', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: 'ミックスベジタブル', kana: 'みっくすべじたぶる', days: 90, category: '冷凍食品', location: '冷凍室' },
+  { name: 'めんつゆ', kana: 'めんつゆ', days: 180, category: '調味料', location: '冷蔵室' },
+  { name: '焼きそば(3入)', kana: 'やきそば', days: 7, category: '麺類', location: '冷蔵室' },
+  { name: 'ハム(1レーン)', kana: 'はむ', days: 14, category: '加工品', location: '冷蔵室' },
+  { name: 'レタス', kana: 'れたす', days: 5, category: '野菜', location: '野菜室' },
+  { name: '和風ダシ', kana: 'わふうだし', days: 360, category: '調味料', location: '常温パントリー' },
+  { name: '食パン(6枚切)', kana: 'しょくぱん', days: 5, category: '加工品', location: 'パン棚' }
+];
+
+defaultPresets.sort((a,b) => a.kana.localeCompare(b.kana, 'ja'));
+
+let items = [
+  { id: 1, name: '豚バラ肉', category: '肉・魚', expiry: getOffsetDate(1), location: 'チルド室', qty: '100%' },
+  { id: 2, name: '玉ねぎ', category: '野菜', expiry: getOffsetDate(15), location: '常温パントリー', qty: '100%' },
+  { id: 3, name: 'にんじん', category: '野菜', expiry: getOffsetDate(10), location: '野菜室', qty: '100%' },
+  { id: 4, name: 'じゃがいも', category: '野菜', expiry: getOffsetDate(20), location: '常温パントリー', qty: '100%' },
+  { id: 5, name: 'カレールー', category: '調味料', expiry: getOffsetDate(60), location: '常温パントリー', qty: '100%' },
+  { id: 6, name: 'キャベツ', category: '野菜', expiry: getOffsetDate(2), location: '野菜室', qty: '75%' }
+];
+
+let historyStack = [];
+let currentTab = 'urgent';
+let selectedQty = '100%';
+let editingItemId = null;
+
+function saveState() {
+  historyStack.push(JSON.stringify(items));
+  document.getElementById('undoBtn').disabled = false;
+}
+
+function undoAction() {
+  if (historyStack.length > 0) {
+    items = JSON.parse(historyStack.pop());
+    if (historyStack.length === 0) {
+      document.getElementById('undoBtn').disabled = true;
+    }
+    render();
+  }
+}
+
+function getOffsetDate(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+function calculateDaysLeft(expiryStr) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const exp = new Date(expiryStr);
+  exp.setHours(0,0,0,0);
+  return Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+}
+
+function openEditDateModal(id) {
+  editingItemId = id;
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('editModalTitle').innerText = `✏️ ${item.name} の期限変更`;
+  document.getElementById('editInputDate').value = item.expiry;
+  document.getElementById('editDateModal').classList.add('active');
+}
+
+function closeEditDateModal() {
+  document.getElementById('editDateModal').classList.remove('active');
+  editingItemId = null;
+}
+
+function extendExpiry(days) {
+  const currentVal = document.getElementById('editInputDate').value;
+  let baseDate = currentVal ? new Date(currentVal) : new Date();
+  baseDate.setDate(baseDate.getDate() + days);
+  document.getElementById('editInputDate').value = baseDate.toISOString().split('T')[0];
+}
+
+function saveUpdatedDate() {
+  const newDate = document.getElementById('editInputDate').value;
+  if (!newDate || !editingItemId) return;
+  saveState();
+  const item = items.find(i => i.id === editingItemId);
+  if (item) {
+    item.expiry = newDate;
+  }
+  closeEditDateModal();
+  render();
+}
+
+// 担当者ごとの指定カラーバッジHTML生成関数
+function getPersonBadgeHTML(person) {
+  if (person.includes('洋平') && person.includes('晃平')) {
+    return `<span class="badge-person bg-yohei">洋平</span><span class="badge-person bg-kohei">晃平</span>`;
+  }
+  if (person.includes('夢翔') && person.includes('奏花')) {
+    return `<span class="badge-person bg-yuma">夢翔</span><span class="badge-person bg-kanade">奏花</span>`;
+  }
+  if (person === '洋平') return `<span class="badge-person bg-yohei">👤 担当: 洋平</span>`;
+  if (person === '晃平') return `<span class="badge-person bg-kohei">👤 担当: 晃平</span>`;
+  if (person === '夢翔') return `<span class="badge-person bg-yuma">👤 担当: 夢翔</span>`;
+  if (person === '奏花') return `<span class="badge-person bg-kanade">👤 担当: 奏花</span>`;
+  return `<span class="badge-person" style="background:#eee; color:#333;">👤 担当: ${person}</span>`;
+}
+
+function renderRecipeCardHTML(person, title, ingredients, searchQuery) {
+  if (searchQuery && !title.toLowerCase().includes(searchQuery) && !person.toLowerCase().includes(searchQuery)) return '';
+
+  const stockNames = items.map(i => i.name);
+  let okCount = 0;
+  let tagHtml = '';
+
+  ingredients.forEach(ing => {
+    const hasItem = stockNames.some(s => s.includes(ing) || ing.includes(s));
+    if (hasItem) {
+      okCount++;
+      tagHtml += `<span class="ing-tag ing-ok">✓ ${ing}</span>`;
+    } else {
+      tagHtml += `<span class="ing-tag ing-missing">✕ ${ing}</span>`;
+    }
+  });
+
+  const matchPercent = Math.round((okCount / ingredients.length) * 100);
+  let matchClass = matchPercent >= 80 ? 'match-high' : 'match-mid';
+
+  return `
+    <div class="recipe-card">
+      <div class="recipe-title">
+        <span>🍽️ ${title} ${getPersonBadgeHTML(person)}</span>
+        <span class="recipe-match ${matchClass}">揃い度 ${matchPercent}% (${okCount}/${ingredients.length})</span>
+      </div>
+      <div class="ingredient-tags">${tagHtml}</div>
+    </div>
+  `;
+}
+
+function render() {
+  const listEl = document.getElementById('item-list');
+  listEl.innerHTML = '';
+
+  const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sortOption = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'expiryAsc';
+
+  let dangerCnt = 0;
+  let warningCnt = 0;
+
+  if (sortOption === 'expiryAsc') {
+    items.sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
+  } else if (sortOption === 'qtyAsc') {
+    items.sort((a,b) => (parseInt(a.qty) || 100) - (parseInt(b.qty) || 100));
+  } else if (sortOption === 'location') {
+    items.sort((a,b) => a.location.localeCompare(b.location, 'ja'));
+  }
+
+  items.forEach(item => {
+    const daysLeft = calculateDaysLeft(item.expiry);
+    if (daysLeft <= 1) dangerCnt++;
+    else if (daysLeft <= 3) warningCnt++;
+  });
+
+  // ④ 「料理で検索」（日〜土の曜日別＆カラーバッジ表示）
+  if (currentTab === 'recipe') {
+    let html = `<div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
+      🍳 <strong>曜日別 料理チェック:</strong> 1週間の献立と担当者がひと目で分かります！
+    </div>`;
+
+    weeklySchedule.forEach(dayGroup => {
+      let dayRecipesHtml = '';
+
+      dayGroup.tasks.forEach(t => {
+        dayRecipesHtml += renderRecipeCardHTML(t.person, t.title, t.ingredients, searchQuery);
+      });
+
+      if (dayRecipesHtml) {
+        html += `
+          <div class="day-section">
+            <div class="day-title">
+              <span>📅 ${dayGroup.day}</span>
+            </div>
+            ${dayRecipesHtml}
+          </div>
+        `;
+      }
+    });
+
+    listEl.innerHTML = html;
+    document.getElementById('cnt-danger').innerText = dangerCnt;
+    document.getElementById('cnt-warning').innerText = warningCnt;
+    document.getElementById('cnt-total').innerText = items.length;
+    return;
+  }
+
+  // ⑤ 「買出しメモ」（日〜土の曜日順＆カラーバッジ表示）
+  if (currentTab === 'shopping') {
+    const stockNames = items.map(i => i.name);
+    let html = `<div style="background:#fff8e1; border:1px solid #ffe082; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
+      🛒 <strong>曜日別 買出しリスト:</strong> 各料理の「不足食材」を自動抽出しています！
+    </div>`;
+
+    let totalMissing = 0;
+
+    weeklySchedule.forEach(dayGroup => {
+      let dayShoppingHtml = '';
+
+      dayGroup.tasks.forEach(t => {
+        if (searchQuery && !t.title.toLowerCase().includes(searchQuery) && !t.person.toLowerCase().includes(searchQuery)) return;
+
+        const missingIngs = t.ingredients.filter(ing => !stockNames.some(s => s.includes(ing) || ing.includes(s)));
+
+        if (missingIngs.length > 0) {
+          totalMissing += missingIngs.length;
+          let tagsHtml = missingIngs.map(ing => {
+            const masterItem = defaultPresets.find(p => p.name === ing) || { days: 7, category: '食品', location: '冷蔵室' };
+            return `
+              <div class="item-card warning" style="border-left-color:#f57c00; margin-bottom:6px; padding:8px 10px;">
+                <div class="item-info">
+                  <div class="item-name" style="font-size:0.85rem;">${ing} <span class="item-badge">${masterItem.location}</span></div>
+                </div>
+                <button class="btn-eat" style="background:#fff3e0; color:#e65100; border-color:#ffe0b2; padding:4px 8px; font-size:0.7rem;" onclick="quickAdd('${ing}', ${masterItem.days}, '${masterItem.category}', '${masterItem.location}')">買って追加！</button>
+              </div>
+            `;
+          }).join('');
+
+          dayShoppingHtml += `
+            <div style="margin-bottom:10px;">
+              <div style="font-size:0.8rem; font-weight:bold; color:#555; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+                🍽️ ${t.title} ${getPersonBadgeHTML(t.person)}:
+              </div>
+              ${tagsHtml}
+            </div>
+          `;
+        }
+      });
+
+      if (dayShoppingHtml) {
+        html += `
+          <div class="day-section" style="border-top-color:#f57c00;">
+            <div class="day-title" style="color:#e65100;">
+              <span>📅 ${dayGroup.day} の買出し対象</span>
+            </div>
+            ${dayShoppingHtml}
+          </div>
+        `;
+      }
+    });
+
+    if (totalMissing === 0) {
+      html += `<div style="text-align:center; color:#2e7d32; padding:30px 0; font-weight:bold;">✨ すべての料理の材料が家に揃っています！</div>`;
+    }
+
+    listEl.innerHTML = html;
+    document.getElementById('cnt-danger').innerText = dangerCnt;
+    document.getElementById('cnt-warning').innerText = warningCnt;
+    document.getElementById('cnt-total').innerText = items.length;
+    return;
+  }
+
+  // 通常一覧表示
+  items.forEach(item => {
+    const daysLeft = calculateDaysLeft(item.expiry);
+
+    if (currentTab === 'urgent' && daysLeft > 3) return;
+
+    if (searchQuery && !item.name.toLowerCase().includes(searchQuery) && !item.location.toLowerCase().includes(searchQuery)) {
+      return;
+    }
+
+    let statusClass = 'safe';
+    let statusText = `あと ${daysLeft} 日`;
+    if (daysLeft < 0) {
+      statusClass = 'danger';
+      statusText = '期限切れ';
+    } else if (daysLeft <= 1) {
+      statusClass = 'danger';
+      statusText = daysLeft === 0 ? '本日中' : '明日まで';
+    } else if (daysLeft <= 3) {
+      statusClass = 'warning';
+      statusText = `あと ${daysLeft} 日`;
+    }
+
+    const card = document.createElement('div');
+    card.className = `item-card ${statusClass}`;
+    card.innerHTML = `
+      <div class="item-info">
+        <div class="item-name">
+          ${item.name}
+          <span class="item-badge">${item.location}</span>
+        </div>
+        <div class="item-meta">
+          <span>残量: <strong>${item.qty}</strong></span>
+          <span>期限: ${item.expiry.replace(/-/g, '/')}</span>
+          <button class="btn-edit-date" onclick="openEditDateModal(${item.id})">✏️ 期限変更</button>
+        </div>
+      </div>
+      <div class="item-status">
+        <span class="days-left ${statusClass}">${statusText}</span>
+      </div>
+      <div class="action-btns">
+        <button class="btn-step" onclick="useStep(${item.id})">-25%消費</button>
+        <button class="btn-eat" onclick="consumeItem(${item.id})">使い切った</button>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+
+  document.getElementById('cnt-danger').innerText = dangerCnt;
+  document.getElementById('cnt-warning').innerText = warningCnt;
+  document.getElementById('cnt-total').innerText = items.length;
+
+  if (listEl.innerHTML === '') {
+    listEl.innerHTML = `<div style="text-align:center; color:#888; padding:30px 0;">🎉 条件に当てはまる食材はありません！</div>`;
+  }
+}
+
+function consumeItem(id) {
+  saveState();
+  items = items.filter(item => item.id !== id);
+  render();
+}
+
+function useStep(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  saveState();
+  let currentNum = parseInt(item.qty) || 100;
+  let nextNum = currentNum - 25;
+  if (nextNum <= 0) {
+    items = items.filter(i => i.id !== id);
+  } else {
+    item.qty = `${nextNum}%`;
+  }
+  render();
+}
+
+function quickAdd(name, days, category, location) {
+  saveState();
+  items.push({
+    id: Date.now(),
+    name: name,
+    category: category,
+    expiry: getOffsetDate(days),
+    location: location,
+    qty: '100%'
+  });
+  if (document.getElementById('presetModal').classList.contains('active')) {
+    closePresetModal();
+  }
+  render();
+}
+
+function switchTab(tab, e) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  render();
+}
+
+function renderPresetList() {
+  const grid = document.getElementById('presetGrid');
+  grid.innerHTML = '';
+  const query = document.getElementById('presetSearchInput').value.trim().toLowerCase();
+
+  defaultPresets.forEach(p => {
+    if (query && !p.name.toLowerCase().includes(query) && !p.kana.includes(query)) return;
+
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    card.onclick = () => quickAdd(p.name, p.days, p.category, p.location);
+    card.innerHTML = `
+      <div>
+        <div class="preset-name">${p.name}</div>
+        <div class="preset-sub">${p.location} | 約${p.days}日</div>
+      </div>
+      <span style="color:#2e7d32; font-weight:bold; font-size:0.8rem;">＋追加</span>
+    `;
+    grid.appendChild(card);
+  });
+
+  if (grid.innerHTML === '') {
+    grid.innerHTML = `<div style="grid-column: span 2; text-align:center; color:#888; padding:12px;">該当する食材が見つかりません</div>`;
+  }
+}
+
+function openPresetModal() {
+  document.getElementById('presetSearchInput').value = '';
+  renderPresetList();
+  document.getElementById('presetModal').classList.add('active');
+}
+
+function closePresetModal() {
+  document.getElementById('presetModal').classList.remove('active');
+}
+
+function openModal() {
+  document.getElementById('inputDate').value = getOffsetDate(3);
+  document.getElementById('addModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('addModal').classList.remove('active');
+}
+
+function selectQty(el, val) {
+  document.querySelectorAll('.qty-btn').forEach(btn => btn.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedQty = val;
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  saveState();
+  const name = document.getElementById('inputName').value;
+  const category = document.getElementById('inputCategory').value;
+  const expiry = document.getElementById('inputDate').value;
+  
+  items.push({
+    id: Date.now(),
+    name: name,
+    category: category,
+    expiry: expiry,
+    location: category,
+    qty: selectedQty
+  });
+
+  closeModal();
+  document.getElementById('addForm').reset();
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
+
+
