@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我が家の食品ロスゼロ！スマート食材管理アプリ V12</title>
+<title>食材管理アプリ 2026</title>
 <style>
   :root {
     --primary: #2e7d32;
@@ -146,8 +146,8 @@
 <body>
 
 <header>
-  <h1>🥬 我が家の食品ロスゼロ！管理アプリ V12</h1>
-  <p>家庭科 × 情報：自動保存対応版 (<span id="currentDateHeader"></span>)</p>
+  <h1>🥬 食材管理アプリ 2026</h1>
+  <p><span id="currentDateHeader"></span></p>
 </header>
 
 <div class="container">
@@ -186,15 +186,16 @@
       <button class="btn-preset-list" onclick="openPresetModal()">📋 食材一覧</button>
     </div>
     <div class="quick-btns">
-      <button class="btn-quick" onclick="quickAdd('じゃがいも', 30, '野菜室', '常温パントリー', '3個', '賞味期限')">+ じゃがいも(30日)</button>
-      <button class="btn-quick" onclick="quickAdd('玉ねぎ', 21, '野菜室', '常温パントリー', '3個', '賞味期限')">+ 玉ねぎ(21日)</button>
-      <button class="btn-quick" onclick="quickAdd('にんじん', 14, '野菜室', '野菜室', '2本', '賞味期限')">+ にんじん(14日)</button>
-      <button class="btn-quick" onclick="quickAdd('豚バラ肉', 2, 'チルド室', 'チルド室', '200g', '消費期限')">+ 豚バラ肉(2日)</button>
+      <button class="btn-quick" onclick="quickAdd('じゃがいも', 30, '野菜室', '常温パントリー', '1袋', '賞味期限')">+ じゃがいも(30日)</button>
+      <button class="btn-quick" onclick="quickAdd('玉ねぎ', 21, '野菜室', '常温パントリー', '1袋', '賞味期限')">+ 玉ねぎ(21日)</button>
+      <button class="btn-quick" onclick="quickAdd('にんじん', 14, '野菜室', '野菜室', '1パック', '賞味期限')">+ にんじん(14日)</button>
+      <button class="btn-quick" onclick="quickAdd('豚バラ肉', 2, 'チルド室', 'チルド室', '1パック', '消費期限')">+ 豚バラ肉(2日)</button>
       <button class="btn-quick" onclick="quickAdd('牛豚ミンチ大', 2, 'チルド室', 'チルド室', '1パック', '消費期限')">+ 牛豚ミンチ大(2日)</button>
+      <button class="btn-quick" onclick="quickAdd('食パン(6切)', 5, 'パン棚', 'パン棚', '1袋', '消費期限')">+ 食パン(6切)(5日)</button>
       <button class="btn-quick" onclick="quickAdd('ソース', 180, '調味料', '常温パントリー', '1本', '賞味期限')">+ ソース(180日)</button>
       <button class="btn-quick" onclick="quickAdd('ケチャップ', 180, '調味料', '常温パントリー', '1本', '賞味期限')">+ ケチャップ(180日)</button>
       <button class="btn-quick" onclick="quickAdd('マヨネーズ', 180, '調味料', '冷蔵室', '1本', '賞味期限')">+ マヨネーズ(180日)</button>
-      <button class="btn-quick" onclick="quickAdd('食パン(6枚切)', 5, '加工品', 'パン棚', '1袋', '消費期限')">+ 食パン(6枚切)(5日)</button>
+      <button class="btn-quick" onclick="quickAdd('卵', 14, '冷蔵室', 'ドアポケット', '1パック', '賞味期限')">+ 卵(14日)</button>
     </div>
   </div>
 
@@ -236,7 +237,7 @@
       <input type="text" id="editInputCount" placeholder="例: 1個, 1パック, 1袋">
     </div>
 
-    <!-- ワンタップ個数・単位選択 (1個, 1本, 1切, 1袋, 1箱, 1パックの順) -->
+    <!-- ワンタップ個数・単位選択 -->
     <div style="background:#e3f2fd; border:1px solid #bbdefb; padding:10px; border-radius:8px; margin-bottom:12px;">
       <p style="font-size:0.75rem; color:#0d47a1; font-weight:bold; margin-bottom:6px;">⚡ ワンタップ数量選択</p>
       
@@ -251,7 +252,7 @@
         <button type="button" style="background:white; border:1px solid #90caf9; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer;" onclick="setPresetCount('1パック')">1パック</button>
       </div>
 
-      <!-- +-微調整ボタン (最小1で固定) -->
+      <!-- +-微調整ボタン -->
       <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
         <button type="button" style="background:#fff3e0; border:1px solid #ffe0b2; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#e65100; font-weight:bold;" onclick="quickAdjustCount(-1)">-1個 減らす</button>
         <button type="button" style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#2e7d32; font-weight:bold;" onclick="quickAdjustCount(1)">+1個 増やす</button>
@@ -281,7 +282,7 @@
       <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
         <button type="button" style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#2e7d32; font-weight:bold;" onclick="extendExpiry(1)">+1日延長</button>
         <button type="button" style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#2e7d32; font-weight:bold;" onclick="extendExpiry(7)">+1週間延長</button>
-        <button type="button" style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#2e7d32; font-weight:bold;" onclick="extendExpiry(30)">+1ヶ月延長</button>
+        <button type="button" style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:6px 2px; font-size:0.72rem; cursor:pointer; color:#2e7d32; font-weight:bold;" onclick="extendExpiry(30)">+1ヶ月延長(冷凍)</button>
       </div>
     </div>
 
@@ -357,101 +358,145 @@
 </div>
 
 <script>
-// ⚠️ ここにご自身のGAS WebアプリURLを貼り付けてください
+// GAS WebアプリURL
 const GAS_API_URL = "https://script.google.com/macros/s/AKfycbx_c1nvgKQo_KPYSyBKUIf7lLnP0DTCb-FKZJoFebyQogLcidMBgIhqN2C9l9DQl45x/exec";
 
 function initHeaderDate() {
-const d = new Date();
-const year = d.getFullYear();
-const month = String(d.getMonth() + 1).padStart(2, '0');
-const date = String(d.getDate()).padStart(2, '0');
-const days = ['日', '月', '火', '水', '木', '金', '土'];
-const dayName = days[d.getDay()];
-document.getElementById('currentDateHeader').innerText = `${year}/${month}/${date} (${dayName})`;
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const date = String(d.getDate()).padStart(2, '0');
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  const dayName = days[d.getDay()];
+  document.getElementById('currentDateHeader').innerText = `${year}/${month}/${date} (${dayName})`;
 }
 
+// 週間献立・材料リスト
 const weeklySchedule = [
-{
-day: '日曜日',
-tasks: [
-{ person: '洋平', title: 'シチュー', ingredients: ['鶏もも肉(3切)', 'じゃがいも', '玉ねぎ', 'にんじん', 'シチュールー'] },
-{ person: '晃平', title: 'カレー', ingredients: ['玉ねぎ', 'にんじん', 'じゃがいも', '豚バラ肉', 'カレールー'] }
-]
-},
-{
-day: '月曜日',
-tasks: [
-{ person: '奏花', title: 'みそ汁', ingredients: ['豆腐(2丁)', '油揚げ', '味噌', '和風だし'] },
-{ person: '奏花', title: 'うどん', ingredients: ['うどん(3入)', 'めんつゆ', '油揚げ'] },
-{ person: '奏花', title: '豚汁', ingredients: ['豚バラ肉', '大根', 'にんじん', 'ごぼう', '味噌'] },
-{ person: '奏花', title: 'チャーハン', ingredients: ['卵(10個包)', 'ハム(1レーン)', 'ねぎ', '塩こしょう'] }
-]
-},
-{
-day: '火曜日',
-tasks: [
-{ person: '夢翔', title: '三色ごはん', ingredients: ['牛豚ミンチ小', '卵(10個包)', 'ほうれん草', '醤油', '砂糖'] },
-{ person: '夢翔', title: 'タコライス', ingredients: ['牛豚ミンチ小', 'レタス', 'トマト', 'ケチャップ'] },
-{ person: '夢翔', title: 'なすミンチ', ingredients: ['ナス', '豚ミンチ大', '生姜', '醤油'] },
-{ person: '夢翔', title: '焼きそば', ingredients: ['焼きそば(3入)', 'キャベツ', '豚バラ肉', 'ソース'] }
-]
-},
-{
-day: '水曜日',
-tasks: [
-{ person: '奏花', title: '魚&さつま揚げ', ingredients: ['鮭(2切)', 'さつま揚げ', '醤油'] },
-{ person: '奏花', title: 'ポトフ', ingredients: ['ウインナー', 'じゃがいも', '玉ねぎ', 'にんじん', 'コンソメ'] },
-{ person: '奏花', title: '麻婆豆腐', ingredients: ['豆腐(2丁)', '豚ミンチ大', '麻婆ソース'] },
-{ person: '奏花', title: '肉じゃが', ingredients: ['豚バラ肉', 'じゃがいも', '玉ねぎ', 'にんじん', 'しらたき'] }
-]
-},
-{
-day: '木曜日',
-tasks: [
-{ person: '夢翔', title: 'しょうが焼き', ingredients: ['豚ローススライス', '玉ねぎ', '生姜', '醤油', 'みりん'] },
-{ person: '夢翔', title: '親子丼', ingredients: ['鶏もも肉(3切)', '玉ねぎ', '卵(10個包)', 'めんつゆ'] },
-{ person: '夢翔', title: '魚&ほうれん草', ingredients: ['ブリ(2切)', 'ほうれん草', '醤油'] },
-{ person: '夢翔', title: 'とり肉', ingredients: ['鶏もも肉(2切)', '塩こしょう', '醤油'] }
-]
-},
-{
-day: '金曜日',
-tasks: [
-{ person: '夢翔 & 奏花', title: 'ハンバーグ&ポテサラ', ingredients: ['牛豚ミンチ大', '玉ねぎ', 'じゃがいも', 'マヨネーズ', 'パン粉'] },
-{ person: '夢翔 & 奏花', title: 'チキン南蛮', ingredients: ['鶏むね肉(5切)', '卵(10個包)', '酢', '砂糖', 'マヨネーズ'] },
-{ person: '夢翔 & 奏花', title: 'チリコンカーン', ingredients: ['牛豚ミンチ大', '大豆', 'トマト', 'コンソメ'] }
-]
-},
-{
-day: '土曜日',
-tasks: [
-{ person: '洋平', title: 'パスタ', ingredients: ['パスタ', 'パスタソース', 'ウインナー'] },
-{ person: '晃平', title: 'お好み焼き', ingredients: ['キャベツ', '豚バラ肉', '卵(10個包)', '小麦粉', 'ソース', 'マヨネーズ'] }
-]
-}
+  {
+    day: '日曜日',
+    tasks: [
+      { person: '洋平', title: 'シチュー', ingredients: ['じゃがいも', '玉ねぎ', 'にんじん', '豚バラ肉', 'シチュールー', '牛乳'] },
+      { person: '晃平', title: 'カレー', ingredients: ['じゃがいも', '玉ねぎ', 'にんじん', '豚バラ肉', 'カレールー甘', 'カレールー中'] }
+    ]
+  },
+  {
+    day: '月曜日',
+    tasks: [
+      { person: '奏花', title: 'みそ汁', ingredients: ['豆腐', '油揚げ', '玉ねぎ', 'さつまいも', '味噌'] },
+      { person: '奏花', title: 'うどん', ingredients: ['うどん(3入)', 'めんつゆ'] },
+      { person: '奏花', title: '豚汁', ingredients: ['豚バラ肉', 'にんじん', 'こんにゃく', '大根', '味噌'] },
+      { person: '奏花', title: 'チャーハン', ingredients: ['卵', 'ハム', '玉ねぎ', 'ピーマン', '塩こしょう'] }
+    ]
+  },
+  {
+    day: '火曜日',
+    tasks: [
+      { person: '夢翔', title: '三色ごはん', ingredients: ['牛豚ミンチ大', '卵', 'ミックスベジタブル', '塩こしょう', '醤油', '砂糖'] },
+      { person: '夢翔', title: 'タコライス', ingredients: ['牛豚ミンチ大', 'レタス', 'トマト', 'アボカド', 'チーズ', 'ソース', 'ケチャップ', '醤油', '酒', '砂糖', 'にんにく'] },
+      { person: '夢翔', title: 'なすミンチ', ingredients: ['牛豚ミンチ大', 'なす', '醤油', 'みりん', '酒', '砂糖', '生姜', '和風だし'] },
+      { person: '夢翔', title: '焼きそば', ingredients: ['焼きそば(3入)', 'キャベツ', '豚バラ肉'] }
+    ]
+  },
+  {
+    day: '水曜日',
+    tasks: [
+      { person: '奏花', title: '魚&さつま揚げ', ingredients: ['ブリ', '鮭', 'さつま揚げ', '塩こしょう'] },
+      { person: '奏花', title: 'ポトフ', ingredients: ['じゃがいも', '玉ねぎ', 'にんじん', 'ウインナー', 'コンソメ', '生姜'] },
+      { person: '奏花', title: '麻婆豆腐', ingredients: ['豆腐', '麻婆ソース'] },
+      { person: '奏花', title: '肉じゃが', ingredients: ['じゃがいも', '玉ねぎ', 'にんじん', '豚バラ肉', 'しらたき'] }
+    ]
+  },
+  {
+    day: '木曜日',
+    tasks: [
+      { person: '夢翔', title: 'しょうが焼き', ingredients: ['豚ローススライス', '生姜', '醤油', 'みりん'] },
+      { person: '夢翔', title: '親子丼', ingredients: ['鶏もも肉', '玉ねぎ', '卵', '醤油', '砂糖', 'みりん', '酒', '和風だし'] },
+      { person: '夢翔', title: '魚&ほうれん草', ingredients: ['ブリ', '鮭', 'ほうれん草', '醤油'] },
+      { person: '夢翔', title: 'とり肉', ingredients: ['鶏もも肉'] }
+    ]
+  },
+  {
+    day: '金曜日',
+    tasks: [
+      { person: '夢翔 & 奏花', title: 'ハンバーグ&ポテサラ', ingredients: ['牛豚ミンチ大', '牛豚ミンチ小', '玉ねぎ', 'パン粉', '卵', '塩こしょう', 'じゃがいも', 'マヨネーズ', '砂糖'] },
+      { person: '夢翔 & 奏花', title: 'チキン南蛮', ingredients: ['鶏むね肉', '片栗粉', '酢', '砂糖', 'マヨネーズ'] },
+      { person: '夢翔 & 奏花', title: 'チリコンカーン', ingredients: ['玉ねぎ', 'にんじん', '豚ミンチ大', '豚ミンチ小', '大豆', 'トマト', '醤油', 'ソース', 'ケチャップ', '塩こしょう'] }
+    ]
+  },
+  {
+    day: '土曜日',
+    tasks: [
+      { person: '洋平', title: 'パスタ', ingredients: ['パスタ', 'パスタソース'] },
+      { person: '晃平', title: 'お好み焼き', ingredients: ['小麦粉', '卵', 'キャベツ', '豚バラ肉', 'ソース', 'マヨネーズ'] }
+    ]
+  }
 ];
 
+// マスターリスト（「油」を追加）
 const defaultPresets = [
-{ name: 'アボカド', kana: 'あぼかど', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1個', type: '賞味期限' },
-{ name: '油', kana: 'あぶら', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
-{ name: '油揚げ', kana: 'あぶらあげ', days: 5, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '消費期限' },
-{ name: 'ウインナー', kana: 'ういんなー', days: 14, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '賞味期限' },
-{ name: 'うどん(3入)', kana: 'うどん', days: 10, category: '冷蔵室', location: '冷蔵室', defaultCount: '1パック', type: '消費期限' },
-{ name: '牛豚ミンチ大', kana: 'うしぶたみんちだい', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
-{ name: '牛豚ミンチ小', kana: 'うしぶたみんちしょう', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
-{ name: 'きゅうり', kana: 'きゅうり', days: 5, category: '野菜室', location: '野菜室', defaultCount: '3本', type: '賞味期限' },
-{ name: '牛乳', kana: 'ぎゅうにゅう', days: 7, category: '冷蔵室', location: 'ドアポケット', defaultCount: '1本', type: '賞味期限' },
-{ name: '卵(10個包)', kana: 'たまご', days: 14, category: '冷蔵室', location: 'ドアポケット', defaultCount: '10個', type: '賞味期限' },
-{ name: 'カレールー', kana: 'かれーるー', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
-{ name: 'キャベツ', kana: 'きゃべつ', days: 7, category: '野菜室', location: '野菜室', defaultCount: '1玉', type: '賞味期限' },
-{ name: 'ケチャップ', kana: 'けちゃっぷ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
-{ name: 'じゃがいも', kana: 'じゃがいも', days: 30, category: '常温パントリー', location: '常温パントリー', defaultCount: '3個', type: '賞味期限' },
-{ name: '玉ねぎ', kana: 'たまねぎ', days: 21, category: '常温パントリー', location: '常温パントリー', defaultCount: '3個', type: '賞味期限' },
-{ name: '豆腐(2丁)', kana: 'とうふ', days: 4, category: '冷蔵室', location: '冷蔵室', defaultCount: '2丁', type: '消費期限' },
-{ name: 'にんじん', kana: 'にんじん', days: 14, category: '野菜室', location: '野菜室', defaultCount: '2本', type: '賞味期限' },
-{ name: '豚バラ肉', kana: 'ぶたばらにく', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '200g', type: '消費期限' },
-{ name: 'マヨネーズ', kana: 'まよねーず', days: 180, category: '冷蔵室', location: '冷蔵室', defaultCount: '1本', type: '賞味期限' },
-{ name: '食パン(6枚切)', kana: 'しょくぱん', days: 5, category: 'パン棚', location: 'パン棚', defaultCount: '1袋', type: '消費期限' }
+  { name: 'アボカド', kana: 'あぼかど', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1個', type: '賞味期限' },
+  { name: '油', kana: 'あぶら', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '油揚げ', kana: 'あぶらあげ', days: 5, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '消費期限' },
+  { name: 'ウインナー', kana: 'ういんなー', days: 14, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'うどん(3入)', kana: 'うどん', days: 10, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '消費期限' },
+  { name: '牛豚ミンチ大', kana: 'うしぶたみんちだい', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
+  { name: '牛豚ミンチ小', kana: 'うしぶたみんちしょう', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: 'パック', type: '消費期限' },
+  { name: '牛乳', kana: 'ぎゅうにゅう', days: 7, category: '冷蔵室', location: 'ドアポケット', defaultCount: '1本', type: '賞味期限' },
+  { name: '片栗粉', kana: 'かたくりこ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'カレールー甘', kana: 'かれーるーあま', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
+  { name: 'カレールー中', kana: 'かれーるーちゅう', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
+  { name: 'キャベツ', kana: 'きゃべつ', days: 7, category: '野菜室', location: '野菜室', defaultCount: '1玉', type: '賞味期限' },
+  { name: 'ケチャップ', kana: 'けちゃっぷ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '小麦粉', kana: 'こむぎこ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'コンソメ', kana: 'こんそめ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
+  { name: 'こんにゃく', kana: 'こんにゃく', days: 30, category: '冷蔵室', location: '冷蔵室', defaultCount: '1個', type: '賞味期限' },
+  { name: '酒', kana: 'さけ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '鮭', kana: 'さけさかな', days: 3, category: 'チルド室', location: 'チルド室', defaultCount: '5切', type: '消費期限' },
+  { name: 'さつま揚げ', kana: 'さつまあげ', days: 5, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '消費期限' },
+  { name: 'さつまいも', kana: 'さつまいも', days: 14, category: '野菜室', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '砂糖', kana: 'さとう', days: 365, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'しらたき', kana: 'しらたき', days: 30, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'シチュールー', kana: 'しちゅーるー', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
+  { name: '食パン(6切)', kana: 'しょくぱん', days: 5, category: 'パン棚', location: 'パン棚', defaultCount: '1袋', type: '消費期限' },
+  { name: 'じゃがいも', kana: 'じゃがいも', days: 30, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: '生姜', kana: 'しょうが', days: 14, category: '野菜室', location: '野菜室', defaultCount: '1本', type: '賞味期限' },
+  { name: '醤油', kana: 'しょうゆ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '酢', kana: 'す', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: 'ソース', kana: 'そーす', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: '大根', kana: 'だいこん', days: 10, category: '野菜室', location: '野菜室', defaultCount: '1本', type: '賞味期限' },
+  { name: '大豆', kana: 'だいず', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1個', type: '賞味期限' },
+  { name: '卵', kana: 'たまご', days: 14, category: '冷蔵室', location: 'ドアポケット', defaultCount: '1パック', type: '賞味期限' },
+  { name: '玉ねぎ', kana: 'たまねぎ', days: 21, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'チーズ', kana: 'ちーず', days: 30, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '賞味期限' },
+  { name: '豆腐', kana: 'とうふ', days: 4, category: '冷蔵室', location: '冷蔵室', defaultCount: '2丁', type: '消費期限' },
+  { name: 'トマト', kana: 'とまと', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1個', type: '賞味期限' },
+  { name: '鶏もも肉', kana: 'とりももにく', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '2切', type: '消費期限' },
+  { name: '鶏むね肉', kana: 'とりむねにく', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '5切', type: '消費期限' },
+  { name: 'なす', kana: 'なす', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'にんにく', kana: 'にんにく', days: 30, category: '野菜室', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: 'にんじん', kana: 'にんじん', days: 14, category: '野菜室', location: '野菜室', defaultCount: '1パック', type: '賞味期限' },
+  { name: '塩こしょう', kana: 'しおこしょう', days: 365, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'パスタ', kana: 'ぱすた', days: 365, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'パスタソース', kana: 'ぱすたそーす', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '5袋', type: '賞味期限' },
+  { name: 'パン粉', kana: 'ぱんこ', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'ピーマン', kana: 'ぴーまん', days: 7, category: '野菜室', location: '野菜室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'ハム', kana: 'はむ', days: 14, category: '冷蔵室', location: '冷蔵室', defaultCount: '4パック', type: '賞味期限' },
+  { name: '豚バラ肉', kana: 'ぶたばらにく', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
+  { name: '豚ミンチ大', kana: 'ぶたみんちだい', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
+  { name: '豚ミンチ小', kana: 'ぶたみんちしょう', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
+  { name: '豚ローススライス', kana: 'ぶたろーすすらいす', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '1パック', type: '消費期限' },
+  { name: 'ブリ', kana: 'ぶり', days: 2, category: 'チルド室', location: 'チルド室', defaultCount: '5切', type: '消費期限' },
+  { name: 'ほうれん草', kana: 'ほうれんそう', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'マヨネーズ', kana: 'まよねーず', days: 180, category: '冷蔵室', location: '冷蔵室', defaultCount: '1本', type: '賞味期限' },
+  { name: '麻婆ソース', kana: 'まーぼーそーす', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1箱', type: '賞味期限' },
+  { name: '味噌', kana: 'みそ', days: 180, category: '冷蔵室', location: '冷蔵室', defaultCount: '1個', type: '賞味期限' },
+  { name: 'ミックスベジタブル', kana: 'みっくすべじたぶる', days: 90, category: '冷凍室', location: '冷凍室', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'みりん', kana: 'みりん', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1本', type: '賞味期限' },
+  { name: 'めんつゆ', kana: 'めんつゆ', days: 180, category: '冷蔵室', location: 'ドアポケット', defaultCount: '1本', type: '賞味期限' },
+  { name: '焼きそば(3入)', kana: 'やきそば', days: 10, category: '冷蔵室', location: '冷蔵室', defaultCount: '1袋', type: '消費期限' },
+  { name: '和風だし', kana: 'わふうだし', days: 180, category: '常温パントリー', location: '常温パントリー', defaultCount: '1袋', type: '賞味期限' },
+  { name: 'レタス', kana: 'れたす', days: 5, category: '野菜室', location: '野菜室', defaultCount: '1玉', type: '賞味期限' }
 ];
 
 defaultPresets.sort((a,b) => a.kana.localeCompare(b.kana, 'ja'));
@@ -465,521 +510,517 @@ let editingItemId = null;
 
 // スプレッドシートからデータを読み込む関数
 async function loadStoredItemsFromGAS() {
-try {
-const response = await fetch(GAS_API_URL, { method: "GET", redirect: "follow" });
-const data = await response.json();
-return Array.isArray(data) ? data : [];
-} catch (e) {
-console.error("読み込みエラー:", e);
-return [];
-}
+  try {
+    const response = await fetch(GAS_API_URL, { method: "GET", redirect: "follow" });
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error("読み込みエラー:", e);
+    return [];
+  }
 }
 
-// スプレッドシートにデータを送信・保存する関数
+// スプレッドシートにデータを送信・保存する非同期関数
 async function saveItemsToGAS() {
-try {
-await fetch(GAS_API_URL, {
-method: "POST",
-headers: { "Content-Type": "text/plain" },
-body: JSON.stringify(items),
-redirect: "follow"
-});
-} catch (e) {
-console.error("保存エラー:", e);
-}
-}
-
-function saveState() {
-historyStack.push(JSON.stringify(items));
-document.getElementById('undoBtn').disabled = false;
-saveItemsToGAS();
+  try {
+    await fetch(GAS_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(items),
+      redirect: "follow"
+    });
+  } catch (e) {
+    console.error("保存エラー:", e);
+  }
 }
 
-function undoAction() {
-if (historyStack.length > 0) {
-items = JSON.parse(historyStack.pop());
-if (historyStack.length === 0) {
-document.getElementById('undoBtn').disabled = true;
+async function saveStateAndSync() {
+  historyStack.push(JSON.stringify(items));
+  document.getElementById('undoBtn').disabled = false;
+  await saveItemsToGAS();
 }
-saveItemsToGAS();
-render();
-}
+
+async function undoAction() {
+  if (historyStack.length > 0) {
+    items = JSON.parse(historyStack.pop());
+    if (historyStack.length === 0) {
+      document.getElementById('undoBtn').disabled = true;
+    }
+    render();
+    await saveItemsToGAS();
+  }
 }
 
 function getOffsetDate(days) {
-const d = new Date();
-d.setDate(d.getDate() + days);
-return d.toISOString().split('T')[0];
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
 }
 
 function calculateDaysLeft(expiryStr) {
-const today = new Date();
-today.setHours(0,0,0,0);
-const exp = new Date(expiryStr);
-exp.setHours(0,0,0,0);
-return Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const exp = new Date(expiryStr);
+  exp.setHours(0,0,0,0);
+  return Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
 }
 
 function normalizeName(str) {
-if (!str) return '';
-return str.replace(/\(.*?\)/g, '').replace(/（.*?）/g, '').trim().toLowerCase();
+  if (!str) return '';
+  return str.replace(/\(.*?\)/g, '').replace(/（.*?）/g, '').trim().toLowerCase();
 }
 
 function openEditDateModal(id) {
-editingItemId = id;
-const item = items.find(i => i.id === id);
-if (!item) return;
-document.getElementById('editModalTitle').innerText = `✏️ ${item.name} の更新`;
-document.getElementById('editInputDate').value = item.expiry;
-document.getElementById('editInputCount').value = item.count || '';
-document.getElementById('editInputType').value = item.type || '賞味期限';
-document.getElementById('editDateModal').classList.add('active');
+  editingItemId = id;
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('editModalTitle').innerText = `✏️ ${item.name} の更新`;
+  document.getElementById('editInputDate').value = item.expiry;
+  document.getElementById('editInputCount').value = item.count || '';
+  document.getElementById('editInputType').value = item.type || '賞味期限';
+  document.getElementById('editDateModal').classList.add('active');
 }
 
 function closeEditDateModal() {
-document.getElementById('editDateModal').classList.remove('active');
-editingItemId = null;
+  document.getElementById('editDateModal').classList.remove('active');
+  editingItemId = null;
 }
 
 function setPresetCount(valStr) {
-document.getElementById('editInputCount').value = valStr;
+  document.getElementById('editInputCount').value = valStr;
 }
 
 function quickAdjustCount(delta) {
-const countInput = document.getElementById('editInputCount');
-const countStr = countInput.value.trim();
-const match = countStr.match(/^(\d+)(.*)$/);
+  const countInput = document.getElementById('editInputCount');
+  const countStr = countInput.value.trim();
+  const match = countStr.match(/^(\d+)(.*)$/);
 
-if (match) {
-let num = parseInt(match[1]) + delta;
-let unit = match[2] || '個';
-if (num < 1) num = 1;
-countInput.value = `${num}${unit}`;
-} else if (!countStr) {
-countInput.value = delta > 0 ? `${delta}個` : `1個`;
-}
+  if (match) {
+    let num = parseInt(match[1]) + delta;
+    let unit = match[2] || '個';
+    if (num < 1) num = 1;
+    countInput.value = `${num}${unit}`;
+  } else if (!countStr) {
+    countInput.value = delta > 0 ? `${delta}個` : `1個`;
+  }
 }
 
 function extendExpiry(days) {
-const currentVal = document.getElementById('editInputDate').value;
-let baseDate = currentVal ? new Date(currentVal) : new Date();
-baseDate.setDate(baseDate.getDate() + days);
-document.getElementById('editInputDate').value = baseDate.toISOString().split('T')[0];
+  const currentVal = document.getElementById('editInputDate').value;
+  let baseDate = currentVal ? new Date(currentVal) : new Date();
+  baseDate.setDate(baseDate.getDate() + days);
+  document.getElementById('editInputDate').value = baseDate.toISOString().split('T')[0];
 }
 
-function saveUpdatedDate() {
-const newDate = document.getElementById('editInputDate').value;
-const newCount = document.getElementById('editInputCount').value.trim();
-const newType = document.getElementById('editInputType').value;
-if (!newDate || !editingItemId) return;
-saveState();
-const item = items.find(i => i.id === editingItemId);
-if (item) {
-item.expiry = newDate;
-item.count = newCount;
-item.type = newType;
-}
-saveItemsToGAS();
-closeEditDateModal();
-render();
+async function saveUpdatedDate() {
+  const newDate = document.getElementById('editInputDate').value;
+  const newCount = document.getElementById('editInputCount').value.trim();
+  const newType = document.getElementById('editInputType').value;
+  if (!newDate || !editingItemId) return;
+  
+  const item = items.find(i => i.id === editingItemId);
+  if (item) {
+    item.expiry = newDate;
+    item.count = newCount;
+    item.type = newType;
+  }
+  closeEditDateModal();
+  render();
+  await saveStateAndSync();
 }
 
 function getPersonBadgeHTML(person) {
-if (person.includes('洋平') && person.includes('晃平')) {
-return `<span class="badge-person bg-yohei">洋平</span><span class="badge-person bg-kohei">晃平</span>`;
-}
-if (person.includes('夢翔') && person.includes('奏花')) {
-return `<span class="badge-person bg-yuma">夢翔</span><span class="badge-person bg-kanade">奏花</span>`;
-}
-if (person === '洋平') return `<span class="badge-person bg-yohei">👤 担当: 洋平</span>`;
-if (person === '晃平') return `<span class="badge-person bg-kohei">👤 担当: 晃平</span>`;
-if (person === '夢翔') return `<span class="badge-person bg-yuma">👤 担当: 夢翔</span>`;
-if (person === '奏花') return `<span class="badge-person bg-kanade">👤 担当: 奏花</span>`;
-return `<span class="badge-person" style="background:#eee; color:#333;">👤 担当: ${person}</span>`;
+  if (person.includes('洋平') && person.includes('晃平')) {
+    return `<span class="badge-person bg-yohei">洋平</span><span class="badge-person bg-kohei">晃平</span>`;
+  }
+  if (person.includes('夢翔') && person.includes('奏花')) {
+    return `<span class="badge-person bg-yuma">夢翔</span><span class="badge-person bg-kanade">奏花</span>`;
+  }
+  if (person === '洋平') return `<span class="badge-person bg-yohei">👤 担当: 洋平</span>`;
+  if (person === '晃平') return `<span class="badge-person bg-kohei">👤 担当: 晃平</span>`;
+  if (person === '夢翔') return `<span class="badge-person bg-yuma">👤 担当: 夢翔</span>`;
+  if (person === '奏花') return `<span class="badge-person bg-kanade">👤 担当: 奏花</span>`;
+  return `<span class="badge-person" style="background:#eee; color:#333;">👤 担当: ${person}</span>`;
 }
 
 function findBestStockItem(rawIngredientName) {
-const normIng = normalizeName(rawIngredientName);
-const matched = items.filter(i => {
-const normStock = normalizeName(i.name);
-return normStock.includes(normIng) || normIng.includes(normStock);
-});
-if (matched.length === 0) return null;
-matched.sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
-return matched[0];
+  const normIng = normalizeName(rawIngredientName);
+  const matched = items.filter(i => {
+    const normStock = normalizeName(i.name);
+    return normStock.includes(normIng) || normIng.includes(normStock);
+  });
+  if (matched.length === 0) return null;
+  matched.sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
+  return matched[0];
 }
 
 function renderRecipeCardHTML(person, title, ingredients, searchQuery) {
-if (searchQuery && !title.toLowerCase().includes(searchQuery) && !person.toLowerCase().includes(searchQuery)) return '';
+  if (searchQuery && !title.toLowerCase().includes(searchQuery) && !person.toLowerCase().includes(searchQuery)) return '';
 
-let okCount = 0;
-let tagHtml = '';
+  let okCount = 0;
+  let tagHtml = '';
 
-ingredients.forEach(ing => {
-const bestStock = findBestStockItem(ing);
-if (bestStock) {
-okCount++;
-const countNote = bestStock.count ? ` (${bestStock.count})` : '';
-tagHtml += `<span class="ing-tag ing-ok">✓ ${ing}${countNote}</span>`;
-} else {
-tagHtml += `<span class="ing-tag ing-missing">✕ ${ing}</span>`;
-}
-});
+  ingredients.forEach(ing => {
+    const bestStock = findBestStockItem(ing);
+    if (bestStock) {
+      okCount++;
+      const countNote = bestStock.count ? ` (${bestStock.count})` : '';
+      tagHtml += `<span class="ing-tag ing-ok">✓ ${ing}${countNote}</span>`;
+    } else {
+      tagHtml += `<span class="ing-tag ing-missing">✕ ${ing}</span>`;
+    }
+  });
 
-const matchPercent = Math.round((okCount / ingredients.length) * 100);
-let matchClass = matchPercent >= 80 ? 'match-high' : 'match-mid';
+  const matchPercent = Math.round((okCount / ingredients.length) * 100);
+  let matchClass = matchPercent >= 80 ? 'match-high' : 'match-mid';
 
-return `
-<div class="recipe-card">
-<div class="recipe-title">
-<span>🍽️ ${title} ${getPersonBadgeHTML(person)}</span>
-<span class="recipe-match ${matchClass}">揃い度 ${matchPercent}% (${okCount}/${ingredients.length})</span>
-</div>
-<div class="ingredient-tags">${tagHtml}</div>
-</div>
-`;
+  return `
+    <div class="recipe-card">
+      <div class="recipe-title">
+        <span>🍽️ ${title} ${getPersonBadgeHTML(person)}</span>
+        <span class="recipe-match ${matchClass}">揃い度 ${matchPercent}% (${okCount}/${ingredients.length})</span>
+      </div>
+      <div class="ingredient-tags">${tagHtml}</div>
+    </div>
+  `;
 }
 
 function setDayFilter(day, btnEl) {
-selectedDayFilter = day;
-document.querySelectorAll('.day-chip').forEach(b => b.classList.remove('active'));
-if (btnEl) btnEl.classList.add('active');
-render();
+  selectedDayFilter = day;
+  document.querySelectorAll('.day-chip').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  render();
 }
 
 function consumeItemAnimated(id) {
-const card = document.getElementById(`item-card-${id}`);
-if (card) {
-card.classList.add('fade-out');
-setTimeout(() => {
-saveState();
-items = items.filter(i => i.id !== id);
-saveItemsToGAS();
-render();
-}, 300);
-}
+  const card = document.getElementById(`item-card-${id}`);
+  if (card) {
+    card.classList.add('fade-out');
+    setTimeout(async () => {
+      items = items.filter(i => i.id !== id);
+      render();
+      await saveStateAndSync();
+    }, 300);
+  }
 }
 
 function useStepAnimated(id) {
-const item = items.find(i => i.id === id);
-if (!item) return;
+  const item = items.find(i => i.id === id);
+  if (!item) return;
 
-let currentNum = parseInt(item.qty) || 100;
-let nextNum = currentNum - 25;
+  let currentNum = parseInt(item.qty) || 100;
+  let nextNum = currentNum - 25;
 
-if (nextNum <= 0) {
-consumeItemAnimated(id);
-} else {
-saveState();
-item.qty = `${nextNum}%`;
-saveItemsToGAS();
-render();
-}
+  if (nextNum <= 0) {
+    consumeItemAnimated(id);
+  } else {
+    item.qty = `${nextNum}%`;
+    render();
+    saveStateAndSync();
+  }
 }
 
 function render() {
-const listEl = document.getElementById('item-list');
-listEl.innerHTML = '';
+  const listEl = document.getElementById('item-list');
+  listEl.innerHTML = '';
 
-const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
-const sortOption = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'expiryAsc';
-const dayNav = document.getElementById('dayFilterNav');
+  const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sortOption = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'expiryAsc';
+  const dayNav = document.getElementById('dayFilterNav');
 
-if (currentTab === 'recipe' || currentTab === 'shopping') {
-dayNav.style.display = 'flex';
-} else {
-dayNav.style.display = 'none';
+  if (currentTab === 'recipe' || currentTab === 'shopping') {
+    dayNav.style.display = 'flex';
+  } else {
+    dayNav.style.display = 'none';
+  }
+
+  let dangerCnt = 0;
+  let warningCnt = 0;
+
+  if (sortOption === 'expiryAsc') {
+    items.sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
+  } else if (sortOption === 'qtyAsc') {
+    items.sort((a,b) => (parseInt(a.qty) || 100) - (parseInt(b.qty) || 100));
+  } else if (sortOption === 'location') {
+    items.sort((a,b) => a.location.localeCompare(b.location, 'ja'));
+  }
+
+  items.forEach(item => {
+    const daysLeft = calculateDaysLeft(item.expiry);
+    if (daysLeft <= 1) dangerCnt++;
+    else if (daysLeft <= 3) warningCnt++;
+  });
+
+  if (currentTab === 'recipe') {
+    let html = `<div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
+      🍳 <strong>曜日別 料理チェック:</strong> 1週間の献立と担当者がひと目で分かります！
+    </div>`;
+
+    weeklySchedule.forEach(dayGroup => {
+      if (selectedDayFilter !== 'ALL' && dayGroup.day !== selectedDayFilter) return;
+
+      let dayRecipesHtml = '';
+      dayGroup.tasks.forEach(t => {
+        dayRecipesHtml += renderRecipeCardHTML(t.person, t.title, t.ingredients, searchQuery);
+      });
+
+      if (dayRecipesHtml) {
+        html += `
+          <div class="day-section">
+            <div class="day-title">
+              <span>📅 ${dayGroup.day}</span>
+            </div>
+            ${dayRecipesHtml}
+          </div>
+        `;
+      }
+    });
+
+    listEl.innerHTML = html;
+    document.getElementById('cnt-danger').innerText = dangerCnt;
+    document.getElementById('cnt-warning').innerText = warningCnt;
+    document.getElementById('cnt-total').innerText = items.length;
+    return;
+  }
+
+  if (currentTab === 'shopping') {
+    let html = `<div style="background:#fff8e1; border:1px solid #ffe082; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
+      🛒 <strong>曜日別 買出しリスト:</strong> 各料理の「不足食材」を自動抽出しています！
+    </div>`;
+
+    let totalMissing = 0;
+
+    weeklySchedule.forEach(dayGroup => {
+      if (selectedDayFilter !== 'ALL' && dayGroup.day !== selectedDayFilter) return;
+
+      let dayShoppingHtml = '';
+
+      dayGroup.tasks.forEach(t => {
+        if (searchQuery && !t.title.toLowerCase().includes(searchQuery) && !t.person.toLowerCase().includes(searchQuery)) return;
+
+        const missingIngs = t.ingredients.filter(ing => !findBestStockItem(ing));
+
+        if (missingIngs.length > 0) {
+          totalMissing += missingIngs.length;
+          let tagsHtml = missingIngs.map(ing => {
+            const masterItem = defaultPresets.find(p => normalizeName(p.name) === normalizeName(ing) || p.name.includes(ing) || ing.includes(p.name)) || { days: 7, category: '食品', location: '冷蔵室', defaultCount: '', type: '賞味期限' };
+            return `
+              <div class="item-card warning" style="border-left-color:#f57c00; margin-bottom:6px; padding:8px 10px;">
+                <div class="item-info">
+                  <div class="item-name" style="font-size:0.85rem;">${ing} <span class="item-badge">${masterItem.location}</span></div>
+                </div>
+                <button class="btn-eat" style="background:#fff3e0; color:#e65100; border-color:#ffe0b2; padding:4px 8px; font-size:0.7rem;" onclick="quickAdd('${ing}', ${masterItem.days}, '${masterItem.category}', '${masterItem.location}', '${masterItem.defaultCount || ''}', '${masterItem.type || '賞味期限'}')">買って追加！</button>
+              </div>
+            `;
+          }).join('');
+
+          dayShoppingHtml += `
+            <div style="margin-bottom:10px;">
+              <div style="font-size:0.8rem; font-weight:bold; color:#555; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+                🍽️ ${t.title} ${getPersonBadgeHTML(t.person)}:
+              </div>
+              ${tagsHtml}
+            </div>
+          `;
+        }
+      });
+
+      if (dayShoppingHtml) {
+        html += `
+          <div class="day-section" style="border-top-color:#f57c00;">
+            <div class="day-title" style="color:#e65100;">
+              <span>📅 ${dayGroup.day} の買出し対象</span>
+            </div>
+            ${dayShoppingHtml}
+          </div>
+        `;
+      }
+    });
+
+    if (totalMissing === 0) {
+      html += `<div style="text-align:center; color:#2e7d32; padding:30px 0; font-weight:bold;">✨ すべての料理の材料が家に揃っています！</div>`;
+    }
+
+    listEl.innerHTML = html;
+    document.getElementById('cnt-danger').innerText = dangerCnt;
+    document.getElementById('cnt-warning').innerText = warningCnt;
+    document.getElementById('cnt-total').innerText = items.length;
+    return;
+  }
+
+  items.forEach(item => {
+    const daysLeft = calculateDaysLeft(item.expiry);
+
+    if (currentTab === 'urgent' && daysLeft > 3) return;
+
+    if (searchQuery && !item.name.toLowerCase().includes(searchQuery) && !item.location.toLowerCase().includes(searchQuery)) {
+      return;
+    }
+
+    let statusClass = 'safe';
+    let statusText = `あと ${daysLeft} 日`;
+    if (daysLeft < 0) {
+      statusClass = 'danger';
+      statusText = item.type === '消費期限' ? '🚨 期限切れ危険' : '期限切れ';
+    } else if (daysLeft <= 1) {
+      statusClass = 'danger';
+      statusText = daysLeft === 0 ? '本日中' : '明日まで';
+    } else if (daysLeft <= 3) {
+      statusClass = 'warning';
+      statusText = `あと ${daysLeft} 日`;
+    }
+
+    const typeBadge = item.type === '消費期限'
+      ? `<span class="item-type-badge type-use">🔴消費</span>`
+      : `<span class="item-type-badge type-best">🔵賞味</span>`;
+
+    const countDisplay = item.count ? ` <strong>${item.count}</strong>` : '';
+
+    const card = document.createElement('div');
+    card.id = `item-card-${item.id}`;
+    card.className = `item-card ${statusClass}`;
+    card.innerHTML = `
+      <div class="item-info">
+        <div class="item-name">
+          ${item.name}
+          ${typeBadge}
+          <span class="item-badge">${item.location}</span>
+        </div>
+        <div class="item-meta">
+          <span>数量:${countDisplay} (残 ${item.qty})</span>
+          <span>期限: ${item.expiry.replace(/-/g, '/')}</span>
+          <button class="btn-edit-date" onclick="openEditDateModal(${item.id})">✏️ 編集</button>
+        </div>
+      </div>
+      <div class="item-status">
+        <span class="days-left ${statusClass}">${statusText}</span>
+      </div>
+      <div class="action-btns">
+        <button class="btn-step" onclick="useStepAnimated(${item.id})">-25%消費</button>
+        <button class="btn-eat" onclick="consumeItemAnimated(${item.id})">使い切った</button>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+
+  document.getElementById('cnt-danger').innerText = dangerCnt;
+  document.getElementById('cnt-warning').innerText = warningCnt;
+  document.getElementById('cnt-total').innerText = items.length;
+
+  if (listEl.innerHTML === '') {
+    listEl.innerHTML = `<div style="text-align:center; color:#888; padding:30px 0;">🎉 条件に当てはまる食材はありません！</div>`;
+  }
 }
 
-let dangerCnt = 0;
-let warningCnt = 0;
-
-if (sortOption === 'expiryAsc') {
-items.sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
-} else if (sortOption === 'qtyAsc') {
-items.sort((a,b) => (parseInt(a.qty) || 100) - (parseInt(b.qty) || 100));
-} else if (sortOption === 'location') {
-items.sort((a,b) => a.location.localeCompare(b.location, 'ja'));
-}
-
-items.forEach(item => {
-const daysLeft = calculateDaysLeft(item.expiry);
-if (daysLeft <= 1) dangerCnt++;
-else if (daysLeft <= 3) warningCnt++;
-});
-
-if (currentTab === 'recipe') {
-let html = `<div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
-🍳 <strong>曜日別 料理チェック:</strong> 1週間の献立と担当者がひと目で分かります！
-</div>`;
-
-weeklySchedule.forEach(dayGroup => {
-if (selectedDayFilter !== 'ALL' && dayGroup.day !== selectedDayFilter) return;
-
-let dayRecipesHtml = '';
-dayGroup.tasks.forEach(t => {
-dayRecipesHtml += renderRecipeCardHTML(t.person, t.title, t.ingredients, searchQuery);
-});
-
-if (dayRecipesHtml) {
-html += `
-<div class="day-section">
-<div class="day-title">
-<span>📅 ${dayGroup.day}</span>
-</div>
-${dayRecipesHtml}
-</div>
-`;
-}
-});
-
-listEl.innerHTML = html;
-document.getElementById('cnt-danger').innerText = dangerCnt;
-document.getElementById('cnt-warning').innerText = warningCnt;
-document.getElementById('cnt-total').innerText = items.length;
-return;
-}
-
-if (currentTab === 'shopping') {
-let html = `<div style="background:#fff8e1; border:1px solid #ffe082; padding:12px; border-radius:10px; margin-bottom:12px; font-size:0.85rem;">
-🛒 <strong>曜日別 買出しリスト:</strong> 各料理の「不足食材」を自動抽出しています！
-</div>`;
-
-let totalMissing = 0;
-
-weeklySchedule.forEach(dayGroup => {
-if (selectedDayFilter !== 'ALL' && dayGroup.day !== selectedDayFilter) return;
-
-let dayShoppingHtml = '';
-
-dayGroup.tasks.forEach(t => {
-if (searchQuery && !t.title.toLowerCase().includes(searchQuery) && !t.person.toLowerCase().includes(searchQuery)) return;
-
-const missingIngs = t.ingredients.filter(ing => !findBestStockItem(ing));
-
-if (missingIngs.length > 0) {
-totalMissing += missingIngs.length;
-let tagsHtml = missingIngs.map(ing => {
-const masterItem = defaultPresets.find(p => normalizeName(p.name) === normalizeName(ing) || p.name.includes(ing) || ing.includes(p.name)) || { days: 7, category: '食品', location: '冷蔵室', defaultCount: '', type: '賞味期限' };
-return `
-<div class="item-card warning" style="border-left-color:#f57c00; margin-bottom:6px; padding:8px 10px;">
-<div class="item-info">
-<div class="item-name" style="font-size:0.85rem;">${ing} <span class="item-badge">${masterItem.location}</span></div>
-</div>
-<button class="btn-eat" style="background:#fff3e0; color:#e65100; border-color:#ffe0b2; padding:4px 8px; font-size:0.7rem;" onclick="quickAdd('${ing}', ${masterItem.days}, '${masterItem.category}', '${masterItem.location}', '${masterItem.defaultCount || ''}', '${masterItem.type || '賞味期限'}')">買って追加！</button>
-</div>
-`;
-}).join('');
-
-dayShoppingHtml += `
-<div style="margin-bottom:10px;">
-<div style="font-size:0.8rem; font-weight:bold; color:#555; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
-🍽️ ${t.title} ${getPersonBadgeHTML(t.person)}:
-</div>
-${tagsHtml}
-</div>
-`;
-}
-});
-
-if (dayShoppingHtml) {
-html += `
-<div class="day-section" style="border-top-color:#f57c00;">
-<div class="day-title" style="color:#e65100;">
-<span>📅 ${dayGroup.day} の買出し対象</span>
-</div>
-${dayShoppingHtml}
-</div>
-`;
-}
-});
-
-if (totalMissing === 0) {
-html += `<div style="text-align:center; color:#2e7d32; padding:30px 0; font-weight:bold;">✨ すべての料理の材料が家に揃っています！</div>`;
-}
-
-listEl.innerHTML = html;
-document.getElementById('cnt-danger').innerText = dangerCnt;
-document.getElementById('cnt-warning').innerText = warningCnt;
-document.getElementById('cnt-total').innerText = items.length;
-return;
-}
-
-items.forEach(item => {
-const daysLeft = calculateDaysLeft(item.expiry);
-
-if (currentTab === 'urgent' && daysLeft > 3) return;
-
-if (searchQuery && !item.name.toLowerCase().includes(searchQuery) && !item.location.toLowerCase().includes(searchQuery)) {
-return;
-}
-
-let statusClass = 'safe';
-let statusText = `あと ${daysLeft} 日`;
-if (daysLeft < 0) {
-statusClass = 'danger';
-statusText = item.type === '消費期限' ? '🚨 期限切れ危険' : '期限切れ';
-} else if (daysLeft <= 1) {
-statusClass = 'danger';
-statusText = daysLeft === 0 ? '本日中' : '明日まで';
-} else if (daysLeft <= 3) {
-statusClass = 'warning';
-statusText = `あと ${daysLeft} 日`;
-}
-
-const typeBadge = item.type === '消費期限'
-? `<span class="item-type-badge type-use">🔴消費</span>`
-: `<span class="item-type-badge type-best">🔵賞味</span>`;
-
-const countDisplay = item.count ? ` <strong>${item.count}</strong>` : '';
-
-const card = document.createElement('div');
-card.id = `item-card-${item.id}`;
-card.className = `item-card ${statusClass}`;
-card.innerHTML = `
-<div class="item-info">
-<div class="item-name">
-${item.name}
-${typeBadge}
-<span class="item-badge">${item.location}</span>
-</div>
-<div class="item-meta">
-<span>数量:${countDisplay} (残 ${item.qty})</span>
-<span>期限: ${item.expiry.replace(/-/g, '/')}</span>
-<button class="btn-edit-date" onclick="openEditDateModal(${item.id})">✏️ 編集</button>
-</div>
-</div>
-<div class="item-status">
-<span class="days-left ${statusClass}">${statusText}</span>
-</div>
-<div class="action-btns">
-<button class="btn-step" onclick="useStepAnimated(${item.id})">-25%消費</button>
-<button class="btn-eat" onclick="consumeItemAnimated(${item.id})">使い切った</button>
-</div>
-`;
-listEl.appendChild(card);
-});
-
-document.getElementById('cnt-danger').innerText = dangerCnt;
-document.getElementById('cnt-warning').innerText = warningCnt;
-document.getElementById('cnt-total').innerText = items.length;
-
-if (listEl.innerHTML === '') {
-listEl.innerHTML = `<div style="text-align:center; color:#888; padding:30px 0;">🎉 条件に当てはまる食材はありません！</div>`;
-}
-}
-
-function quickAdd(name, days, category, location, defaultCount = '', type = '賞味期限') {
-saveState();
-items.push({
-id: Date.now(),
-name: name,
-category: category,
-expiry: getOffsetDate(days),
-location: location,
-qty: '100%',
-count: defaultCount,
-type: type
-});
-saveItemsToGAS();
-if (document.getElementById('presetModal').classList.contains('active')) {
-closePresetModal();
-}
-render();
+async function quickAdd(name, days, category, location, defaultCount = '', type = '賞味期限') {
+  items.push({
+    id: Date.now(),
+    name: name,
+    category: category,
+    expiry: getOffsetDate(days),
+    location: location,
+    qty: '100%',
+    count: defaultCount,
+    type: type
+  });
+  if (document.getElementById('presetModal').classList.contains('active')) {
+    closePresetModal();
+  }
+  render();
+  await saveStateAndSync();
 }
 
 function switchTab(tab, e) {
-currentTab = tab;
-document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-if (e && e.target) e.target.classList.add('active');
-render();
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  render();
 }
 
 function renderPresetList() {
-const grid = document.getElementById('presetGrid');
-grid.innerHTML = '';
-const query = document.getElementById('presetSearchInput').value.trim().toLowerCase();
+  const grid = document.getElementById('presetGrid');
+  grid.innerHTML = '';
+  const query = document.getElementById('presetSearchInput').value.trim().toLowerCase();
 
-defaultPresets.forEach(p => {
-if (query && !p.name.toLowerCase().includes(query) && !p.kana.includes(query)) return;
+  defaultPresets.forEach(p => {
+    if (query && !p.name.toLowerCase().includes(query) && !p.kana.includes(query)) return;
 
-const card = document.createElement('div');
-card.className = 'preset-card';
-card.onclick = () => quickAdd(p.name, p.days, p.category, p.location, p.defaultCount || '', p.type || '賞味期限');
-card.innerHTML = `
-<div>
-<div class="preset-name">${p.name}</div>
-<div class="preset-sub">${p.location} | 約${p.days}日 | ${p.type || '賞味'}</div>
-</div>
-<span style="color:#2e7d32; font-weight:bold; font-size:0.8rem;">＋追加</span>
-`;
-grid.appendChild(card);
-});
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    card.onclick = () => quickAdd(p.name, p.days, p.category, p.location, p.defaultCount || '', p.type || '賞味期限');
+    card.innerHTML = `
+      <div>
+        <div class="preset-name">${p.name}</div>
+        <div class="preset-sub">${p.location} | 約${p.days}日 | ${p.type || '賞味'}</div>
+      </div>
+      <span style="color:#2e7d32; font-weight:bold; font-size:0.8rem;">＋追加</span>
+    `;
+    grid.appendChild(card);
+  });
 
-if (grid.innerHTML === '') {
-grid.innerHTML = `<div style="grid-column: span 2; text-align:center; color:#888; padding:12px;">該当する食材が見つかりません</div>`;
-}
+  if (grid.innerHTML === '') {
+    grid.innerHTML = `<div style="grid-column: span 2; text-align:center; color:#888; padding:12px;">該当する食材が見つかりません</div>`;
+  }
 }
 
 function openPresetModal() {
-document.getElementById('presetSearchInput').value = '';
-renderPresetList();
-document.getElementById('presetModal').classList.add('active');
+  document.getElementById('presetSearchInput').value = '';
+  renderPresetList();
+  document.getElementById('presetModal').classList.add('active');
 }
 
 function closePresetModal() {
-document.getElementById('presetModal').classList.remove('active');
+  document.getElementById('presetModal').classList.remove('active');
 }
 
 function openModal() {
-document.getElementById('inputDate').value = getOffsetDate(3);
-document.getElementById('inputCount').value = '';
-document.getElementById('addModal').classList.add('active');
+  document.getElementById('inputDate').value = getOffsetDate(3);
+  document.getElementById('inputCount').value = '';
+  document.getElementById('addModal').classList.add('active');
 }
 
 function closeModal() {
-document.getElementById('addModal').classList.remove('active');
+  document.getElementById('addModal').classList.remove('active');
 }
 
 function selectQty(el, val) {
-document.querySelectorAll('.qty-btn').forEach(btn => btn.classList.remove('selected'));
-el.classList.add('selected');
-selectedQty = val;
+  document.querySelectorAll('.qty-btn').forEach(btn => btn.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedQty = val;
 }
 
-function handleFormSubmit(e) {
-e.preventDefault();
-saveState();
-const name = document.getElementById('inputName').value;
-const count = document.getElementById('inputCount').value.trim();
-const category = document.getElementById('inputCategory').value;
-const type = document.getElementById('inputType').value;
-const expiry = document.getElementById('inputDate').value;
+async function handleFormSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('inputName').value;
+  const count = document.getElementById('inputCount').value.trim();
+  const category = document.getElementById('inputCategory').value;
+  const type = document.getElementById('inputType').value;
+  const expiry = document.getElementById('inputDate').value;
 
-items.push({
-id: Date.now(),
-name: name,
-category: category,
-expiry: expiry,
-location: category,
-qty: selectedQty,
-count: count,
-type: type
-});
+  items.push({
+    id: Date.now(),
+    name: name,
+    category: category,
+    expiry: expiry,
+    location: category,
+    qty: selectedQty,
+    count: count,
+    type: type
+  });
 
-saveItemsToGAS();
-closeModal();
-document.getElementById('addForm').reset();
-render();
+  closeModal();
+  document.getElementById('addForm').reset();
+  render();
+  await saveStateAndSync();
 }
 
 // 起動時の初期化処理
 async function initApp() {
-initHeaderDate();
-document.getElementById('item-list').innerHTML =
-`<div style="text-align:center; padding:30px; color:#666;">🔄 スプレッドシートからデータを取得中...</div>`;
-items = await loadStoredItemsFromGAS();
-render();
+  initHeaderDate();
+  document.getElementById('item-list').innerHTML =
+    `<div style="text-align:center; padding:30px; color:#666;">🔄 スプレッドシートからデータを取得中...</div>`;
+  items = await loadStoredItemsFromGAS();
+  render();
 }
 
 initApp();
